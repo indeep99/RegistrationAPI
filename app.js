@@ -17,6 +17,11 @@ const db = mysql.createConnection({
 const publicDirectory = path.join(__dirname, './public');
 app.use(express.static(publicDirectory));
 
+//Parses URL-encoded bodies (as sent by the HTML form)
+app.use(express.urlencoded({ extended: false }));
+// Parse JSON bodies (as sent by the API client)
+app.use(express.json());
+
 app.set('view engine', 'hbs');
 
 db.connect( (error) => {
@@ -27,10 +32,9 @@ db.connect( (error) => {
     }
 })
 
-app.get("/", (req, res) => {
-    // res.send("<h1>Home page</h1>")
-    res.render("index")
-})
+//routers defined in other class
+app.use('/', require('./routes/pages'));
+app.use('/auth', require('./routes/auth'))
 
 app.listen(5001, () => {
     console.log("Server is on Port 5001")
